@@ -1,0 +1,10 @@
+Ctrl:
+ - CtrlBlock
+ - LsqEnqCtrl
+ - Alu
+Exu:
+ - DelayN_17
+ - DelayN_16
+ - DelayN
+ - DelayN_31
+ - DelayN_1
