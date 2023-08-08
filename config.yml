@@ -1,7 +1,6 @@
  - CtrlBlock
  - Frontend
- - exuBlock
- - l2cache
- - l3cache
+ - ExecuteBlock
+ - CoupledL2
  - HuanCun
  - sram
