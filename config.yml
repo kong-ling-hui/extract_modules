@@ -1,10 +1,7 @@
-Ctrl:
  - CtrlBlock
- - LsqEnqCtrl
- - Alu
-Exu:
- - DelayN_17
- - DelayN_16
- - DelayN
- - DelayN_31
- - DelayN_1
+ - Frontend
+ - exuBlock
+ - l2cache
+ - l3cache
+ - HuanCun
+ - sram
