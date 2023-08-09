@@ -42,26 +42,37 @@ def get_all_submodules(dict_of_modules, conf):
         all_submodules.clear()
         try:
             if(file_module not in dict_of_modules.keys()):
-                raise Exception(f"[WARNING] Don't have module '{file_module}', please modify the configuration file")
+                raise Exception(f"[WARNING] Don't have the module '{file_module}', please modify the configuration file")
             ###判断submodules是否为空，为空则continue
             # print(file_module, dict_of_modules[file_module].submodules)
             if(not bool(dict_of_modules[file_module].submodules)):
                 continue
             all_submodules.extend(list(dict_of_modules[file_module].submodules))
+            ###当前的verilog文件不全，导致dict_of_modules中并不一定包括所有的module
             for submodule in all_submodules:
-                all_submodules.extend(list(dict_of_modules[submodule].submodules))
+                if(submodule not in dict_of_modules.keys()):
+                    continue
+                if(not bool(dict_of_modules[file_module].submodules)):
+                    continue
+                all_submodules.extend(list(set(list(dict_of_modules[submodule].submodules) + all_submodules)))
+                all_submodules = list(set(all_submodules))
             dict_of_modules[file_module].submodules.update(set(all_submodules))
         except Exception as e:
-            conf.remove(file_module)
+            # conf.remove(file_module)
             print(str(e))
+
     
 
-def main():    
+def main():
+    arg_file = "/nfs/home/konglinghui/learning/python/extract_modules/extract_modules/data"
+    arg_out_dir = "/nfs/home/konglinghui/learning/python/extract_modules/extract_modules/des"
+    arg_config_file = "/nfs/home/konglinghui/learning/python/extract_modules/extract_modules/config.yml"
+    
     parser = argparse.ArgumentParser(description='verilog module extractor, seperate every single module within a single verilog file')
 
-    parser.add_argument('--file', '-f', dest="file", type=str, help='input verilog file', default=r'./data')
-    parser.add_argument('--output', '-o', dest="out_dir", type=str, help='output directory', default=r'./des')
-    parser.add_argument('--config', '-c', dest="config_file", type=str, help='config file', default=r'./config.yml')
+    parser.add_argument('--file', '-f', dest="file", type=str, help='input verilog file', default=arg_file)
+    parser.add_argument('--output', '-o', dest="out_dir", type=str, help='output directory', default=arg_out_dir)
+    parser.add_argument('--config', '-c', dest="config_file", type=str, help='config file', default=arg_config_file)
     parser.add_argument("--output_count_prefix", '-p', dest="prefix", action="store_true", help="enable output file prefix with current module count")
     
 
@@ -119,7 +130,11 @@ def main():
                         file_name = out_dir + '/' + str(module_count) + '_' + module_name + '.sv'
                     else:
                         file_name = out_dir + '/' + module_name + '.sv'
+                    ####
                     print(file_name)
+                    if(module_name == "DifftestArchIntRegState"):
+                        print(file_name)
+                    ####
                     wf = open(file_name,'wt')
                     
                 if(line.count('endmodule') != 0):
@@ -152,6 +167,8 @@ def main():
                     except:
                         pass
                 line_num = line_num + 1
+            if(module_name == "DifftestArchIntRegState"):
+                print(file_name)
             lf.close()
             
     ########
@@ -169,11 +186,14 @@ def main():
                     shutil.move(mv_dir_src, mv_dir_dst)
                     with open(os.path.join(mv_dir_dst, "aafilelist.txt"), "a") as f:
                         print(sub, file = f)
+                except FileNotFoundError:
+                    print(f"[WARNING] The '{sub}' module is in Common")
                 except Exception as e:
-                    # print(str(e))
-                    pass
+                    ###有相同子模块的父模块会mv同一个模块，这里来处理报的错
+                    print("[WARNING]", str(e))
         except Exception as e:
-            print(f"[WARNING] Don't have module {str(e)}, please modify the configuration file")
+            ##已经在get_all_submodules中报过相同的warning
+            pass
     
     #yaml文件中没有描述的统一放到Top文件夹中
     pattern = r".+\.(sv|s)$"
