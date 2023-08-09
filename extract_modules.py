@@ -117,11 +117,9 @@ def main():
                 if(line.count('module') != 0 and find_module == False):
                     find_module = True
                     module_name = re.split(r'[;,\s(]\s*',line)[1]
-                    
                     ###
                     dict_of_modules[module_name] = Mod(module_name)
                     ###
-                    
                     module_count = module_count + 1
                     strr = '['+str(module_count)+'] find module => '+module_name + ' in line ' + str(line_num)
                     # print(strr)
@@ -145,7 +143,6 @@ def main():
                     temp_line = re.split(r'[;,\s]\s*',line)
                     if(temp_line.count('(') == 1 and temp_line.count(')') == 0):
                         strr = '\tfind submodule => module_name:( %-*s)  inst_name:( %-*s) in line [ %-*s ]'%(20,temp_line[1],20,temp_line[2],6,str(line_num))
-                        
                         ###
                         if temp_line[1] not in dict_of_modules.keys():
                             dict_of_modules[temp_line[1]] = Mod(temp_line[1])
@@ -170,7 +167,6 @@ def main():
             if(module_name == "DifftestArchIntRegState"):
                 print(file_name)
             lf.close()
-            
     ########
     get_all_submodules(dict_of_modules, config)
     for module in config:
