@@ -12,3 +12,5 @@ python extract_modules.py -f ./data -o ./des -c ./config.yml
 上图展示的是一个简单的yaml配置文件，运行之后会创建对应文件夹，然后将子模块放到对应的目录，下图是运行结果：  
 ![image](https://github.com/kong-ling-hui/extract_modules/blob/main/des_struct.png)  
 其中所有的公共子模块则会放到Common下，其余模块都放到了Top文件夹里。  
+>[reference](https://github.com/cyril0124/huancun_cocotb "参考代码")
+
